@@ -18,9 +18,7 @@ const Nico = require('kazagumo-nico');
 const kazagumo = new Kazagumo(
   {
     plugins: [
-      new Deezer({
-        playlistLimit: 20
-      }),
+      new Nico(),
     ],
   },
   new Connectors.DiscordJS(client),
