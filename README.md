@@ -1,21 +1,19 @@
 # kazagumo-deezer
-A plugin that allows you to play music on deezer
+A plugin that allows you to play music on nico
 
 Install
 ```
-npm i kazagumo-deezer
+npm i kazagumo-nico
 ```
 
 Support source:
 ```
-- https://www.deezer.com/us/playlist/53362031
-- https://www.deezer.com/us/track/6745599
-- https://www.deezer.com/us/album/103248
+- https://www.nicovideo.jp/watch/sm30067009
 ```
 How to
 ```js
 const { Kazagumo } = require('kazagumo');
-const Deezer = require('kazagumo-deezer');
+const Nico = require('kazagumo-nico');
 
 const kazagumo = new Kazagumo(
   {
@@ -29,6 +27,6 @@ const kazagumo = new Kazagumo(
   Nodes,
 );
 
-kazagumo.search(`https://www.deezer.com/us/playlist/53362031`); // track, album, playlist
-kazagumo.search('mirror heart', { engine: 'deezer' }); // search track using deezer
+kazagumo.search(`https://www.nicovideo.jp/watch/sm30067009`); // track
+kazagumo.search('初音ミク', { engine: 'niconicotv' }); // search track using nico
 ```
