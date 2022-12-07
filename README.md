@@ -1,4 +1,4 @@
-# kazagumo-deezer
+# kazagumo-nico
 A plugin that allows you to play music on nico
 
 Install
