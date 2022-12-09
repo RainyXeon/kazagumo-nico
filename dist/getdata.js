@@ -14,11 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getInfo = void 0;
 const node_html_parser_1 = require("node-html-parser");
-const node_fetch_1 = __importDefault(require("node-fetch"));
 const headers_1 = require("./headers");
+const axios_1 = __importDefault(require("axios"));
 function getInfo(url) {
     return __awaiter(this, void 0, void 0, function* () {
-        const videoSiteDom = (0, node_html_parser_1.parse)(yield (yield (0, node_fetch_1.default)(url, { headers: headers_1.headers })).text());
+        const axiosInfo = yield axios_1.default.get(url, { headers: headers_1.headers });
+        const videoSiteDom = (0, node_html_parser_1.parse)(yield (axiosInfo.data.toString()));
         const matchResult = videoSiteDom
             .querySelectorAll('div')
             .filter((a) => a.rawAttributes.id === 'js-initial-watch-data');
