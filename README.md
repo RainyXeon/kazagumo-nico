@@ -18,7 +18,7 @@ const Nico = require('kazagumo-nico');
 const kazagumo = new Kazagumo(
   {
     plugins: [
-      new Nico(),
+      new Nico({ searchLimit: 25 }),
     ],
   },
   new Connectors.DiscordJS(client),

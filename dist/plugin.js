@@ -8,18 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.KazagumoPlugin = void 0;
 const kazagumo_1 = require("kazagumo");
-const niconico_dl_js_1 = __importDefault(require("niconico-dl.js"));
-const niconico_search_api_1 = __importDefault(require("niconico-search-api"));
+const getdata_1 = require("./getdata");
+const search_1 = require("./search");
 const REGEX = /^https?:\/\/(?:www\.|secure\.|sp\.)?nicovideo\.jp\/watch\/([a-z]{2}[0-9]+)/;
 class KazagumoPlugin extends kazagumo_1.KazagumoPlugin {
-    constructor() {
+    constructor(nicoOptions) {
         super();
+        this.options = nicoOptions;
         this.methods = {
             track: this.getTrack.bind(this),
         };
@@ -53,7 +51,7 @@ class KazagumoPlugin extends kazagumo_1.KazagumoPlugin {
                     return this.buildSearch(undefined, [], 'SEARCH');
                 }
             }
-            else if ((options === null || options === void 0 ? void 0 : options.engine) === 'niconicotv' && !isUrl) {
+            else if ((options === null || options === void 0 ? void 0 : options.engine) === 'nicovideo' && !isUrl) {
                 const result = yield this.searchTrack(query, options === null || options === void 0 ? void 0 : options.requester);
                 return this.buildSearch(undefined, result.tracks, 'SEARCH');
             }
@@ -69,20 +67,12 @@ class KazagumoPlugin extends kazagumo_1.KazagumoPlugin {
     }
     searchTrack(query, requester) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('Running');
             try {
-                const { data } = yield (0, niconico_search_api_1.default)({
-                    q: query,
-                    targets: ["tagsExact"],
-                    fields: ["contentId"],
-                    sort: "-viewCounter",
-                    limit: 10,
-                });
+                const { data } = yield (0, search_1.NicoSearch)(query, this.options.searchLimit);
                 const res = [];
                 for (let i = 0; i < data.length; i++) {
-                    const element = data[i];
-                    const nico = new niconico_dl_js_1.default(`https://www.nicovideo.jp/watch/${element.contentId}`, 'low');
-                    const info = yield nico.getVideoInfo();
+                    const e = data[i];
+                    const info = yield (0, getdata_1.getInfo)(`https://www.nicovideo.jp/watch/${e.contentId}`);
                     res.push(info);
                 }
                 return {
@@ -97,8 +87,8 @@ class KazagumoPlugin extends kazagumo_1.KazagumoPlugin {
     getTrack(id, requester) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const niconico = new niconico_dl_js_1.default(`https://www.nicovideo.jp/watch/${id}`, 'low');
-                const info = yield niconico.getVideoInfo();
+                const info = yield (0, getdata_1.getInfo)(`https://www.nicovideo.jp/watch/${id}`);
+                console.log(info);
                 return { tracks: [this.buildKazagumoTrack(info, requester)] };
             }
             catch (e) {
@@ -113,7 +103,7 @@ class KazagumoPlugin extends kazagumo_1.KazagumoPlugin {
         return new kazagumo_1.KazagumoTrack({
             track: '',
             info: {
-                sourceName: 'niconicotv',
+                sourceName: 'nicovideo',
                 identifier: nicoTrack.id,
                 isSeekable: true,
                 author: nicoTrack.owner ? nicoTrack.owner.nickname : 'Unknown',
