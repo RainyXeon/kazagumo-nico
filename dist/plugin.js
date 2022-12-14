@@ -88,7 +88,6 @@ class KazagumoPlugin extends kazagumo_1.KazagumoPlugin {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const info = yield (0, getdata_1.getInfo)(`https://www.nicovideo.jp/watch/${id}`);
-                console.log(info);
                 return { tracks: [this.buildKazagumoTrack(info, requester)] };
             }
             catch (e) {
